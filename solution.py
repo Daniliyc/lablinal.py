@@ -1,51 +1,102 @@
-f = open('input.txt','rt')
-mas = f.readline().split()
-a, b, c, d, p, q = mas[0], mas[1], mas[2], mas[3], mas[4], mas[5]
-a, b, c, d, p, q = float(a), float(b), float(c), float(d), float(p), float(q)
-mat = [[a, b],
-       [c, d]]
-matb = [[p],
-        [q]]
-matx = [[p,b],
-        [q,d]]
-maty = [[a, p],
-        [c, q]]
-det_mat = mat[0][0] * mat[1][1] - mat[1][0] * mat[0][1]
-det_matx = matx[0][0] * matx[1][1] - matx[1][0] * matx[0][1]
-det_maty = maty[0][0] * maty[1][1] - maty[1][0] * maty[0][1]
-if det_mat != 0:
-    x = det_matx / det_mat
-    y = det_maty / det_mat
-    k = '2 ' + str(x) + ' ' + str(y)
-    f = open('output.txt','w')
-    f.write(k)
-elif mat[0][1] == mat[1][1] == 0:
-    x = matb[0][0] / mat[0][0]
-    k = '3 ' + str(x)
-    f = open('output.txt','w')
-    f.write(k)
-elif  mat[0][0] == mat[1][0] == 0:
-    y = matb[0][0] / mat[0][1]
-    k = '4 ' + str(y)
-    f = open('output.txt','w')
-    f.write(k)
-elif mat[0][0] == mat[0][1] == mat[1][0] == mat[1][1] == 0:
-    f = open('output.txt','w')
-    f.write('5')
-elif det_mat == det_matx == det_maty == 0:
-    if (mat[0][0] % mat[1][0] == 0) and (mat[0][1] % mat[1][1] == 0) and (matb[0][0] % matb[1][0] == 0):
-            s = mat[0][0] / mat[0][1] * (-1)
-            t = matb[0][0] / mat[0][1]
-            k = '1 ' + str(s) + ' ' + str(t)
-            f = open('output.txt','w')
-            f.write(k)
-    elif (mat[1][0] % mat[0][0] == 0) and (mat[1][1] % mat[0][1] == 0) and (matb[1][0] % matb[0][0] == 0):
-            s = mat[1][0] / mat[1][1] * (-1)
-            t = matb[1][0] / mat[1][1]
-            k = '1 ' + str(s) + ' ' + str(t)
-            f = open('output.txt','w')
-            f.write(k)
+f = open('input.txt', 'rt')
+s = f.readline().strip()
+m = [int(k) for k in s.split(' ')]
+m0 = m[0]
+m1 = m[1]
+s = f.readline().strip()
+m = [float(k) for k in s.split(' ')]
+d = 0
+a = [0]*m0
+
+for i in range (m0):
+    a[i] = [0]*m1
+for i in range(m0):
+    for j in range(m1):
+        a[i][j] = m[d]
+        d += 1
+
+s = f.readline().strip()
+m = [int(k) for k in s.split(' ')]
+m0 = m[0]
+m1 = m[1]
+s = f.readline().strip()
+m = [float(k) for k in s.split(' ')]
+d = 0
+b = [0]*m0
+
+for i in range (m0):
+    b[i] = [0]*m1
+for i in range(m0):
+    for j in range(m1):
+        b[i][j] = m[d]
+        d += 1
+
+s = f.readline().strip()
+m = [int(k) for k in s.split(' ')]
+m0 = m[0]
+m1 = m[1]
+s = f.readline().strip()
+m = [float(k) for k in s.split(' ')]
+d = 0
+c = [0]*m0
+
+for i in range (m0):
+    c[i] = [0]*m1
+for i in range(m0):
+    for j in range(m1):
+        c[i][j] = m[d]
+        d += 1
+
+const = float(f.readline().strip())
+
+for i in range(len(b)):
+    for j in range(len(b[i])):
+        b[i][j] = b[i][j]*const
+
+n = [[0 for j in range (len(c))] for i in range(len(c[0]))]
+for i in range(len(c)):
+    for j in range(len(c[i])):
+        n[j][i] = c[i][j]
+
+if len(b) != len(n) or len(n[0]) != len(b[0]):
+    with open("output.txt", "w") as f:
+        f.write("0\n")
+    f.close()
+    exit()
+
 else:
-    f = open('output.txt','w')
-    f.write('0')
+    for i in range(len(b)):
+        for j in range(len(b[i])):
+              b[i][j] = n[i][j] + b[i][j]
+
+if len(a[0]) != len(b):
+    with open("output.txt", "w") as f:
+        f.write("0\n")
+    f.close()
+    exit()
+
+else:
+    R = [0]*len(a)
+    for i in range (len(a)):
+        R[i] = [0]*len(b[0])
+
+for g in range(len(b)):
+    for i in range(len(a)):
+        for j in range(len(b[0])):
+            R[i][j] = R[i][j] + a[i][g] * b[g][j]
+
+with open("output.txt", "w") as f:
+    f.write("1\n")
+    f.write(str(len(R)))
+    f.write(" ")
+    f.write(str(len(R[0])))
+    f.write("\n")
+    for i in range(len(R)):
+        for j in range(len(R[0])):
+            if R[i][j]%1==0:
+                f.write(str(int(R[i][j])))
+            else:
+                f.write(str(R[i][j]))
+            f.write(" ")
+
 f.close()
